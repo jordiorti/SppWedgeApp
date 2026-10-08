@@ -10,33 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configurar Java
-        uses: actions/setup-java@v4
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          command: buildozer -v android debug
 
-      - name: Instalar dependencias del sistema
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip openjdk-17-jdk python3-pip python3-setuptools \
-            python3-virtualenv python3-dev autoconf libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake \
-            libffi-dev libssl-dev lld
-
-      - name: Instalar Buildozer y Cython
-        run: |
-          pip3 install --upgrade pip
-          pip3 install --user cython==0.29.36 buildozer
-
-      - name: Añadir pip al PATH
-        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Compilar APK con Buildozer
-        run: buildozer -v android debug
-
-      - name: Subir APK generado
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: spp-wedge-apk
